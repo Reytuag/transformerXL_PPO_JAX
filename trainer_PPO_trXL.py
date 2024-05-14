@@ -8,15 +8,11 @@ from typing import Sequence, NamedTuple, Any
 from flax.training.train_state import TrainState
 import distrax
 import gymnax
-from gymnax.wrappers.purerl import LogWrapper, FlattenObservationWrapper
+from gymnax.wrappers.purerl import  FlattenObservationWrapper
 
 
-from craftax.craftax_classic.envs.craftax_symbolic_env import (
-            CraftaxClassicSymbolicEnv,
-        )
 
-from craftax.craftax.envs.craftax_symbolic_env import CraftaxSymbolicEnv
-from craftax.environment_base.wrappers import (
+from wrappers import (
     LogWrapper,
     OptimisticResetVecEnvWrapper,
     AutoResetEnvWrapper,
@@ -168,14 +164,21 @@ def make_train(config):
         config["NUM_ENVS"] * config["NUM_STEPS"] // config["NUM_MINIBATCHES"]
     )
     
-    env=CraftaxSymbolicEnv()
-    env_params=env.default_params
-    env = LogWrapper(env)
-    env = OptimisticResetVecEnvWrapper(
-            env,
-            num_envs=config["NUM_ENVS"],
-            reset_ratio=min(16, config["NUM_ENVS"]),
-        )
+    if(config["ENV_NAME"][:7]=="craftax"):
+        from craftax.craftax.envs.craftax_symbolic_env import CraftaxSymbolicEnv
+        env=CraftaxSymbolicEnv()
+        env_params=env.default_params
+        env = LogWrapper(env)
+        env = OptimisticResetVecEnvWrapper(
+                env,
+                num_envs=config["NUM_ENVS"],
+                reset_ratio=min(16, config["NUM_ENVS"]),
+            )
+    else:
+        env, env_params = gymnax.make(config["ENV_NAME"])
+        env = FlattenObservationWrapper(env)
+        env = LogWrapper(env)
+        env = BatchEnvWrapper(env,config["NUM_ENVS"])
 
     def linear_schedule(count):
         frac = 1.0 - (count // (config["NUM_MINIBATCHES"] * config["UPDATE_EPOCHS"])) / (config["NUM_UPDATES"]) 
@@ -342,7 +345,6 @@ def make_train(config):
                         #roll of different value for each step to match the right
                         memories_mask=roll_vmap(memories_mask,jnp.arange(0,config["WINDOW_GRAD"]),-1)
 
-                        print("memories_mask shape",memories_mask.shape)
                         #RESHAPE
                         obs=traj_batch.obs
                         obs=obs.reshape((-1,config["WINDOW_GRAD"] ,)+obs.shape[2:])

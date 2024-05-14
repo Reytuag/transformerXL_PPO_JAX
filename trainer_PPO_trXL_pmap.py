@@ -8,15 +8,16 @@ from typing import Sequence, NamedTuple, Any
 from flax.training.train_state import TrainState
 import distrax
 import gymnax
-from gymnax.wrappers.purerl import LogWrapper, FlattenObservationWrapper
+from gymnax.wrappers.purerl import FlattenObservationWrapper
 
 
-from craftax.craftax_classic.envs.craftax_symbolic_env import (
-            CraftaxClassicSymbolicEnv,
-        )
+#from craftax.craftax_classic.envs.craftax_symbolic_env import (
+#            CraftaxClassicSymbolicEnv,
+#        )
 
-from craftax.craftax.envs.craftax_symbolic_env import CraftaxSymbolicEnv
-from craftax.environment_base.wrappers import (
+
+
+from wrappers import (
     LogWrapper,
     OptimisticResetVecEnvWrapper,
     AutoResetEnvWrapper,
@@ -171,20 +172,26 @@ def make_train(config,rng):
         config["TOTAL_TIMESTEPS"] // config["NUM_STEPS"] // config["NUM_ENVS"]
     )
     
-    config["NUM_ENVS"]=int(config["NUM_ENVS"]/len(jax.local_devices()))
+    config["NUM_ENVS_PER_GPU"]=int(config["NUM_ENVS"]/len(jax.local_devices()))
     config["MINIBATCH_SIZE"] = (
-        config["NUM_ENVS"] * config["NUM_STEPS"] // config["NUM_MINIBATCHES"]
+        config["NUM_ENVS_PER_GPU"] * config["NUM_STEPS"] // config["NUM_MINIBATCHES"]
     )
     
-    
-    env=CraftaxSymbolicEnv()
-    env_params=env.default_params
-    env = LogWrapper(env)
-    env = OptimisticResetVecEnvWrapper(
-            env,
-            num_envs=config["NUM_ENVS"],
-            reset_ratio=min(16, config["NUM_ENVS"]),
-        )
+    if(config["ENV_NAME"][:7]=="craftax"):
+        from craftax.craftax.envs.craftax_symbolic_env import CraftaxSymbolicEnv
+        env=CraftaxSymbolicEnv()
+        env_params=env.default_params
+        env = LogWrapper(env)
+        env = OptimisticResetVecEnvWrapper(
+                env,
+                num_envs=config["NUM_ENVS_PER_GPU"],
+                reset_ratio=min(16, config["NUM_ENVS_PER_GPU"]),
+            )
+    else:
+        env, env_params = gymnax.make(config["ENV_NAME"])
+        env = FlattenObservationWrapper(env)
+        env = LogWrapper(env)
+        env = BatchEnvWrapper(env,config["NUM_ENVS_PER_GPU"])
     
     
 
@@ -234,7 +241,7 @@ def make_train(config,rng):
         # Reset ENV
         rng, _rng = jax.random.split(rng)
         obsv, env_state =env.reset(_rng, env_params)
-        #reset_rng = jax.random.split(_rng, config["NUM_ENVS"])
+        #reset_rng = jax.random.split(_rng, config["NUM_ENVS_PER_GPU"])
         #obsv, env_state = jax.vmap(env.reset, in_axes=(0, None))(reset_rng, env_params)
         
         
@@ -247,7 +254,7 @@ def make_train(config,rng):
                 
                 # reset memories mask and mask idx in cask of done otherwise mask will consider one more stepif not filled (if filled= 
                 memories_mask_idx=jnp.where(done,config["WINDOW_MEM"] ,jnp.clip(memories_mask_idx-1,0,config["WINDOW_MEM"]))
-                memories_mask=jnp.where(done[:,None,None,None],jnp.zeros((config["NUM_ENVS"],config["num_heads"],1,config["WINDOW_MEM"]+1),dtype=jnp.bool_),memories_mask)
+                memories_mask=jnp.where(done[:,None,None,None],jnp.zeros((config["NUM_ENVS_PER_GPU"],config["num_heads"],1,config["WINDOW_MEM"]+1),dtype=jnp.bool_),memories_mask)
                 
                 #Update memories mask with the potential additional step taken into account at this step
                 memories_mask_idx_ohot=jax.nn.one_hot(memories_mask_idx,config["WINDOW_MEM"]+1)
@@ -267,7 +274,7 @@ def make_train(config,rng):
 
                 # STEP ENV
                 rng, _rng = jax.random.split(rng)
-                #rng_step = jax.random.split(_rng, config["NUM_ENVS"])
+                #rng_step = jax.random.split(_rng, config["NUM_ENVS_PER_GPU"])
                 #obsv, env_state, reward, done, info = jax.vmap(env.step, in_axes=(0,0,0,None))(
                 #    rng_step, env_state, action, env_params
                 #)
@@ -280,7 +287,7 @@ def make_train(config,rng):
                 # not forgeeting that we will concatenate the previous WINDOW_MEM to the NUM_STEPS so that even the first step will use some cached memory.
                 #previous without this is attend to 0 which are masked but with reset happening if we start the num_steps loop during good to keep memory from previous
                 
-                memory_indices=jnp.arange(0,config["WINDOW_MEM"])[None,:]+step_env_currentloop*jnp.ones((config["NUM_ENVS"],1),dtype=jnp.int32)
+                memory_indices=jnp.arange(0,config["WINDOW_MEM"])[None,:]+step_env_currentloop*jnp.ones((config["NUM_ENVS_PER_GPU"],1),dtype=jnp.int32)
                 
                 transition = Transition(
                     done, action, jax.lax.stop_gradient(value), reward, jax.lax.stop_gradient(log_prob),memories_mask.squeeze(),memory_indices, last_obs, info
@@ -412,8 +419,8 @@ def make_train(config,rng):
                 ), "NUM_STEPS should be divi by WINDOW_GRAD to properly batch the window_grad"
                 
                 
-                # PERMUTE ALONG THE NUM_ENVS ONLY NOT TO LOOSE TRACK FROM TEMPORAL 
-                permutation = jax.random.permutation(_rng, config["NUM_ENVS"])
+                # PERMUTE ALONG THE NUM_ENVS_PER_GPU ONLY NOT TO LOOSE TRACK FROM TEMPORAL 
+                permutation = jax.random.permutation(_rng, config["NUM_ENVS_PER_GPU"])
                 batch = (traj_batch,memories_batch, advantages, targets)
                 batch = jax.tree_util.tree_map(
                     lambda x:  jnp.swapaxes(x,0,1),
@@ -469,11 +476,11 @@ def make_train(config,rng):
         
         # INITIALIZE the memories and memories mask 
         rng, _rng = jax.random.split(rng)
-        memories=jnp.zeros((config["NUM_ENVS"],config["WINDOW_MEM"],config["num_layers"],config["EMBED_SIZE"]))
-        memories_mask=jnp.zeros((config["NUM_ENVS"],config["num_heads"],1,config["WINDOW_MEM"]+1),dtype=jnp.bool_)
+        memories=jnp.zeros((config["NUM_ENVS_PER_GPU"],config["WINDOW_MEM"],config["num_layers"],config["EMBED_SIZE"]))
+        memories_mask=jnp.zeros((config["NUM_ENVS_PER_GPU"],config["num_heads"],1,config["WINDOW_MEM"]+1),dtype=jnp.bool_)
         #memories +1 bc will remove one 
-        memories_mask_idx= jnp.zeros((config["NUM_ENVS"],),dtype=jnp.int32)+(config["WINDOW_MEM"]+1)
-        done=jnp.zeros((config["NUM_ENVS"],),dtype=jnp.bool_)
+        memories_mask_idx= jnp.zeros((config["NUM_ENVS_PER_GPU"],),dtype=jnp.int32)+(config["WINDOW_MEM"]+1)
+        done=jnp.zeros((config["NUM_ENVS_PER_GPU"],),dtype=jnp.bool_)
         
         runner_state = (train_state, env_state,memories,memories_mask,memories_mask_idx, obsv,done,0, _rng)
         runner_state, metric = jax.lax.scan(

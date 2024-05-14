@@ -133,8 +133,8 @@ def dot_product_attention_weights(
     
     
     #TODO see which one is faster (should be doing the same thing too , mb just take rel_shift as same as huggingface impl)
-    #attn_weights_r=roll_vmap(attn_weights_r,jnp.arange(0,query.shape[-3])-(query.shape[-3]-1),-1)
-    attn_weights_r=_rel_shift(attn_weights_r)
+    attn_weights_r=roll_vmap(attn_weights_r,jnp.arange(0,query.shape[-3])-(query.shape[-3]-1),-1)
+    #attn_weights_r=_rel_shift(attn_weights_r)
     attn_weights=attn_weights+attn_weights_r
     
     
