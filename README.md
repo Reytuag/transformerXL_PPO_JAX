@@ -2,7 +2,7 @@
 
 This repository provides a JAX implementation of TranformerXL with PPO in a RL setup following :  "Stabilizing Transformers for Reinforcement Learning" from Parisotto et al. (https://arxiv.org/abs/1910.06764). 
 
-The code uses the [PureJaxRL](https://github.com/luchris429/purejaxrl) template for PPO and copied some of the code from [Huggingface transformerXL](https://github.com/huggingface/transformers/blob/v4.40.1/src/transformers/models/deprecated/transfo_xl/modeling_transfo_xl.py) transferring it to JAX.
+The code uses the [PureJaxRL](https://github.com/luchris429/purejaxrl) template for PPO and copied some of the code from [Huggingface transformerXL](https://github.com/huggingface/transformers/blob/v4.40.1/src/transformers/models/deprecated/transfo_xl/modeling_transfo_xl.py) transferring it to JAX. We also took inspiration from the pytorch code in https://github.com/MarcoMeter/episodic-transformer-memory-ppo, which has some simplification of gradient propagation and positional encoding compared to transformerXL as it is described in the original paper (https://arxiv.org/abs/1901.02860). 
 
 The training handles [Gymnax](https://github.com/RobertTLange/gymnax) environment. 
 
