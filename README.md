@@ -17,6 +17,9 @@ git clone git@github.com:Reytuag/transformerXL_PPO_JAX.git
 cd transformerXL_PPO_JAX
 pip install requirements.txt
 ```
+
+:warning: By default, this will install the cpu version of JAX. You can install the GPU version of JAX following https://jax.readthedocs.io/en/latest/installation.html.
+
 ## Training 
 
 You can edit the training config in train_PPO_trXL.py ( or train_PPOtrXL_pmap.py if you want to go multi GPU) including the name of the environment. (you can put any gymnax environment name, or "craftax" which will use the CraftaxSymbolic env)   
@@ -55,7 +58,19 @@ Here are the achievements success rates across training for 4e9 steps:
 
 However training for 8e9 steps did not lead to significant improvement. Though we did not conducted much hyperparameters tuning.  
 
+## Config parameters : 
+* TOTAL_TIMESTEPS : Total number of environment steps during training. 
+* NUM_STEPS : Number of steps between updates. The training data for each update will thus contain NUM_STEPS*NUM_ENVS total steps. 
+* WINDOW_MEM :  Size of the memory. (the last step will attend to WINDOW_MEM previous steps in addition to itself)
+* WINDOW_GRAD : At training, size of the context window where transformer embeddings are computed again (not using cached one) and thus where gradient flow maximally. ( in the base transformerXL paper https://arxiv.org/abs/1901.02860 , WINDOW_GRAD=WINDOW_MEM, but in "Human-Timescale Adaptation in an Open-Ended Task Space" (https://arxiv.org/abs/2301.07608), they seem to use different values (a memory size of 300, and a "rollout context window" of 80).
 
+:warning: WINDOW_GRAD must divide NUM_STEPS. 
+* num_layers : Number of transformer layers
+* EMBED_SIZE : Size of the embeddings in the transformer
+* num_heads : Number of attention heads at each transformer layer
+* qkv_features : Size of the query,key,value vectors will be qkv_features//num_heads
+
+  
 ## Related Works 
 * Gymnax: https://github.com/RobertTLange/gymnax
 * Craftax: https://github.com/MichaelTMatthews/Craftax
