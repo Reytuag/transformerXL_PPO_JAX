@@ -30,14 +30,28 @@ Or if you go multi GPU.(it will use all your GPU)
 python3 train_PPOtrXL_pmap.py
 ```
 
-
 ## Results on Craftax 
 
+Without much parameter search, with a budget of 1e9 timesteps, the normalized return (max) achieve 18.5 compared to 15.3 for PPO-RNN according to the craftax paper. (with one seed visiting the sewer). 
+
+With a budget of 4e9 timesteps, ... 
+
 ## Related Works 
+* Gymnax: https://github.com/RobertTLange/gymnax
+* Craftax: https://github.com/MichaelTMatthews/Craftax
+* Xland-Minigrid: https://github.com/corl-team/xland-minigrid
+* PureJaxRL: https://github.com/luchris429/purejaxrl
+* JaxMARL: https://github.com/FLAIROx/JaxMARL
+* Jumanji: https://github.com/instadeepai/jumanji
+* Evojax: https://github.com/google/evojax
+* Evosax: https://github.com/RobertTLange/evosax
+* Brax: https://github.com/google/brax
+
 
 ## Next steps 
 
 * Train it on XLand-MiniGrid (https://github.com/corl-team/xland-minigrid) to test it on an open-ended environment in a meta-RL fashion.
 * Add an implementation of Muesli (https://arxiv.org/abs/2104.06159) with transformerXL as in "Human-Timescale Adaptation in an Open-Ended Task Space" (https://arxiv.org/abs/2301.07608)
+
 
 
