@@ -1,7 +1,6 @@
 import time
 from trainer_PPO_trXL_pmap import make_train,ActorCriticTransformer
 import jax
-import optax
 import os
 import jax.numpy as jnp
 
@@ -43,7 +42,7 @@ config = {
 #seed=int(os.environ["SLURM_ARRAY_TASK_ID"])
 seed=config["seed"]
 
-prefix= "results_craftax/"+config["ENV_NAME"]+"1e9"
+prefix= "results_craftax/"+config["ENV_NAME"]
 
 
 
