@@ -76,7 +76,7 @@ print("compilation took " + str(time.time()-time_a))
 print("Start training")
 time_a=time.time()
 out =train_jit_fn(rng,train_states)
-a=out["metrics"]["returned_episode_returns"].block_until_ready()
+returns=out["metrics"]["returned_episode_returns"].block_until_ready()
 print("training took " + str(time.time()-time_a))
 
 out=unreplicate(out)
