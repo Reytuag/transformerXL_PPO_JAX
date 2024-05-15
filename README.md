@@ -19,15 +19,15 @@ pip install requirements.txt
 ```
 ## Training 
 
-You can edit the training config in train_PPOtrXL.py ( or train_PPOtrXL_pmap.py if you want to go multi GPU) including the name of the environment. (you can put any gymnax environment name, or "craftax" which will use the CraftaxSymbolic env)   
+You can edit the training config in train_PPO_trXL.py ( or train_PPOtrXL_pmap.py if you want to go multi GPU) including the name of the environment. (you can put any gymnax environment name, or "craftax" which will use the CraftaxSymbolic env)   
 
 To launch the training: 
 ```
-python3 train_PPOtrXL.py
+python3 train_PPO_trXL.py
 ```
 Or if you go multi GPU.(it will use all your GPU) 
 ```
-python3 train_PPOtrXL_pmap.py
+python3 train_PPO_trXL_pmap.py
 ```
 
 ## Results on Craftax 
