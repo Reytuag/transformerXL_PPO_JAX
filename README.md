@@ -8,7 +8,7 @@ The training handles [Gymnax](https://github.com/RobertTLange/gymnax) environmen
 
 We also tested it on [Craftax](https://github.com/MichaelTMatthews/Craftax/tree/main/craftax), on which it beat the baseline presented in the paper (https://arxiv.org/abs/2402.16801) including PPO-RNN, training with unsupervised environment design and intrinsic motivation. Notably we reach the 3rd level (the sewer) and obtain several advanced advancements, which was not achieved by the methods presented in the paper. See [Craftax Results](#results-on-craftax) for more informations. 
 
-The training of a 5M transformer on craftax for 1e9 steps takes about 6h30 on a single A100. 
+The training of a 5M transformer on craftax for 1e9 steps (with 1024 environments) takes about 6h30 on a single A100. 
 
 ## Installation
 
@@ -34,12 +34,27 @@ python3 train_PPO_trXL_pmap.py
 
 ![enter_sewerb](https://github.com/Reytuag/transformerXL_PPO_JAX/assets/76616547/b517835d-bcfd-4f49-866d-9a6123face18)
 
-
 Without much parameter search, with a budget of 1e9 timesteps, the normalized return (\% max) achieve 18.3\% compared to 15.3\% for PPO-RNN according to the craftax paper. (with one seed visiting the sewer). 
+The config used can be found as the default config in [train_PPO_trXL_pmap.py](train_PPO_trXL_pmap.py). The results can be found in [results_craftax](results_craftax)  (and can be loaded with jnp.load(str(seed)+"_metrics.npy",allow_pickle=True).item()) as well as the trained parameters. 
 
 ![craftax_training_transfoXL_PPO](https://github.com/Reytuag/transformerXL_PPO_JAX/assets/76616547/80140a56-a77e-418e-86d7-305a6e43c5ac)
 
-With a budget of 4e9 timesteps, the normalized return is 20.6 \%. Visiting the 3rd floor (the sewer) a decent amount of time and achieve several advanced achievements. Both of this was not reached by the baseline in the craftax paper even PPO-RNN with 10e9 interactions with the environment. 
+
+Here are the achievements success rates across training for 1e9 steps. Notably "enter the gnomish mine" is much higher than what is reported in the craftax paper, even PPO-RNN trained on 10e9 steps so 10 times more ends up not visiting the gnomish mines while one seed luckily visit the level after the gnomish mine: the sewer. 
+
+![craftax_achievements_1e9steps](https://github.com/Reytuag/transformerXL_PPO_JAX/assets/76616547/00fb0c23-057c-4607-a36e-58cc8186f89c)
+  
+
+
+With a budget of 4e9 timesteps, the normalized return is 20.6 \%. Visiting the 3rd floor (the sewer) a decent amount of time and achieve several advanced achievements. Both visiting the 3rd floor and reaching any advanced achievement were not reached by any of the baseline in the craftax paper even PPO-RNN with 10e9 interactions with the environment. 
+
+Here are the achievements success rates across training for 4e9 steps: 
+
+![craftax_achievements_4e9steps](https://github.com/Reytuag/transformerXL_PPO_JAX/assets/76616547/d3d67b6b-38c6-4cf8-a323-4234b0fe3fd7)
+
+
+However training for 8e9 steps did not lead to significant improvement. Though we did not conducted much hyperparameters tuning.  
+
 
 ## Related Works 
 * Gymnax: https://github.com/RobertTLange/gymnax
