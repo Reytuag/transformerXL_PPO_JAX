@@ -2,11 +2,11 @@
 
 This repository provides a JAX implementation of TranformerXL with PPO in a RL setup following :  "Stabilizing Transformers for Reinforcement Learning" from Parisotto et al. (https://arxiv.org/abs/1910.06764). 
 
-The code uses the PureJaxRL (https://github.com/luchris429/purejaxrl) template for PPO and copied some of the code from Huggingface transformerXL (https://github.com/huggingface/transformers/blob/v4.40.1/src/transformers/models/deprecated/transfo_xl/modeling_transfo_xl.py) transferring it to JAX.
+The code uses the [PureJaxRL](https://github.com/luchris429/purejaxrl) template for PPO and copied some of the code from [Huggingface transformerXL](https://github.com/huggingface/transformers/blob/v4.40.1/src/transformers/models/deprecated/transfo_xl/modeling_transfo_xl.py) transferring it to JAX.
 
-The training handles Gymnax (https://github.com/RobertTLange/gymnax) environment. 
-We also tested it on Craftax ( https://github.com/MichaelTMatthews/Craftax/tree/main/craftax ), on which it beat the baseline presented in the paper (https://arxiv.org/abs/2402.16801) including PPO-RNN, training with unsupervised environment design and intrinsic motivation. 
-Notably we reach the 3rd level (the sewer) and obtain several advanced advancements, which was not achieved by the methods presented in the paper. 
+The training handles [Gymnax](https://github.com/RobertTLange/gymnax) environment. 
+
+We also tested it on [Craftax](https://github.com/MichaelTMatthews/Craftax/tree/main/craftax), on which it beat the baseline presented in the paper (https://arxiv.org/abs/2402.16801) including PPO-RNN, training with unsupervised environment design and intrinsic motivation. Notably we reach the 3rd level (the sewer) and obtain several advanced advancements, which was not achieved by the methods presented in the paper. See [Craftax Results](#results-on-craftax) for more informations. 
 
 The training of a 5M transformer on craftax for 1e9 steps takes about 6h30 on a single A100. 
 
