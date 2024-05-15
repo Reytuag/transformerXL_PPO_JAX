@@ -56,7 +56,7 @@ except:
 
     
     
-
+print("Start compiling")
 time_a=time.time()
 rng = jax.random.PRNGKey(seed)
 
@@ -74,6 +74,7 @@ rng=jax.random.split(rng,len(jax.local_devices()))
 train_jit_fn= train_fn.lower(rng,train_states).compile()
 print("compilation took " + str(time_a-time.time()))
 
+print("Start training")
 time_a=time.time()
 out =train_jit_fn(rng,train_states)
 a=out["metrics"]["returned_episode_returns"].block_until_ready()
