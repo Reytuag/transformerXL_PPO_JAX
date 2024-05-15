@@ -48,7 +48,8 @@ try:
                 os.makedirs(prefix)
 except:
     print("directory creation " + prefix +" failed")
-
+    
+print("Start compiling and training")
 time_a=time.time()
 rng = jax.random.PRNGKey(seed)
 train_jit = jax.jit(make_train(config))
