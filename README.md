@@ -32,9 +32,14 @@ python3 train_PPOtrXL_pmap.py
 
 ## Results on Craftax 
 
-Without much parameter search, with a budget of 1e9 timesteps, the normalized return (max) achieve 18.5 compared to 15.3 for PPO-RNN according to the craftax paper. (with one seed visiting the sewer). 
+![enter_sewerb](https://github.com/Reytuag/transformerXL_PPO_JAX/assets/76616547/b517835d-bcfd-4f49-866d-9a6123face18)
 
-With a budget of 4e9 timesteps, ... 
+
+Without much parameter search, with a budget of 1e9 timesteps, the normalized return (\% max) achieve 18.3\% compared to 15.3\% for PPO-RNN according to the craftax paper. (with one seed visiting the sewer). 
+
+![craftax_training_transfoXL_PPO](https://github.com/Reytuag/transformerXL_PPO_JAX/assets/76616547/80140a56-a77e-418e-86d7-305a6e43c5ac)
+
+With a budget of 4e9 timesteps, the normalized return is 20.6 \%. Visiting the 3rd floor (the sewer) a decent amount of time and achieve several advanced achievements. Both of this was not reached by the baseline in the craftax paper even PPO-RNN with 10e9 interactions with the environment. 
 
 ## Related Works 
 * Gymnax: https://github.com/RobertTLange/gymnax
