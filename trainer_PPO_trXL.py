@@ -164,7 +164,7 @@ def make_train(config):
         config["NUM_ENVS"] * config["NUM_STEPS"] // config["NUM_MINIBATCHES"]
     )
     
-    if(config["ENV_NAME"][:7]=="craftax"):
+    if(config["ENV_NAME"]=="craftax"):
         from craftax.craftax.envs.craftax_symbolic_env import CraftaxSymbolicEnv
         env=CraftaxSymbolicEnv()
         env_params=env.default_params

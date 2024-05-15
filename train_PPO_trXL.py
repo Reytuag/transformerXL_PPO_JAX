@@ -39,7 +39,7 @@ config = {
 
 seed=config["seed"]
 
-prefix= "tests/"+config["ENV_NAME"]
+prefix= "results_gymnax/"+config["ENV_NAME"]
 
 
 

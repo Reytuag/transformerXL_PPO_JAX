@@ -43,7 +43,7 @@ config = {
 #seed=int(os.environ["SLURM_ARRAY_TASK_ID"])
 seed=config["seed"]
 
-prefix= "tests/"+config["ENV_NAME"]+"1e9"
+prefix= "results_craftax/"+config["ENV_NAME"]+"1e9"
 
 
 
