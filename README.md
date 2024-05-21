@@ -15,7 +15,7 @@ The training of a 5M transformer on craftax for 1e9 steps (with 1024 environment
 ```
 git clone git@github.com:Reytuag/transformerXL_PPO_JAX.git
 cd transformerXL_PPO_JAX
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 :warning: By default, this will install the cpu version of JAX. You can install the GPU version of JAX following https://jax.readthedocs.io/en/latest/installation.html.
