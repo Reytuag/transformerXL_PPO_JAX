@@ -70,6 +70,7 @@ However training for 8e9 steps did not lead to significant improvement. Though w
 * num_heads : Number of attention heads at each transformer layer
 * qkv_features : Size of the query,key,value vectors will be qkv_features//num_heads
 
+For continuous action space, you can follow [PurejaxRL example](https://github.com/luchris429/purejaxrl/blob/main/purejaxrl/ppo_continuous_action.py) and replace the categorical distrib in the actor network by "actor_logtstd = self.param("log_std", nn.initializers.zeros, (self.action_dim,))    ,  pi = distrax.MultivariateNormalDiag(actor_mean, jnp.exp(actor_logtstd))"
   
 ## Related Works 
 * Gymnax: https://github.com/RobertTLange/gymnax
