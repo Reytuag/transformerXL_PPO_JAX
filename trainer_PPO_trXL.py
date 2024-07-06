@@ -165,8 +165,8 @@ def make_train(config):
     )
     
     if(config["ENV_NAME"]=="craftax"):
-        from craftax.craftax.envs.craftax_symbolic_env import CraftaxSymbolicEnv
-        env=CraftaxSymbolicEnv()
+        from craftax.craftax.envs.craftax_symbolic_env import CraftaxSymbolicEnvNoAutoReset
+        env=CraftaxSymbolicEnvNoAutoReset()
         env_params=env.default_params
         env = LogWrapper(env)
         env = OptimisticResetVecEnvWrapper(
