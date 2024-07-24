@@ -89,5 +89,21 @@ For continuous action space, you can follow [PurejaxRL example](https://github.c
 * Train it on XLand-MiniGrid (https://github.com/corl-team/xland-minigrid) to test it on an open-ended environment in a meta-RL fashion.
 * Add an implementation of Muesli (https://arxiv.org/abs/2104.06159) with transformerXL as in "Human-Timescale Adaptation in an Open-Ended Task Space" (https://arxiv.org/abs/2301.07608)
 
+## Citation 
 
+```bibtex
+@softwareversion{hamon:hal-04659863v1,
+  TITLE = {{transformerXL\_PPO\_JAX}},
+  AUTHOR = {Hamon, Gautier},
+  URL = {https://inria.hal.science/hal-04659863},
+  NOTE = {},
+  YEAR = {2024},
+  MONTH = Jul,
+  REPOSITORY = {https://github.com/Reytuag/transformerXL_PPO_JAX},
+  LICENSE = {MIT License},
+  KEYWORDS = {Transformer ; Reinforcement Learning ; JAX},
+  HAL_ID = {hal-04659863},
+  HAL_VERSION = {v1},
+}
+```
 
