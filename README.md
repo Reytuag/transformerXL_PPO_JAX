@@ -37,7 +37,7 @@ python3 train_PPO_trXL_pmap.py
 
 ![enter_sewerb](https://github.com/Reytuag/transformerXL_PPO_JAX/assets/76616547/b517835d-bcfd-4f49-866d-9a6123face18)
 
-Without much parameter search, with a budget of 1e9 timesteps, the normalized return (\% max) achieve 18.3\% compared to 15.3\% for PPO-RNN according to the craftax paper. (with one seed visiting the sewer). 
+Without much parameter search, with a budget of 1e9 timesteps, the normalized return (\% max) achieve 18.3\% compared to 15.3\% for PPO-RNN according to the craftax paper. (with one seed visiting the sewer). (Note that in the meantime a small error was fixed in the code (leading to a single MLP layer in the position-wise MLP part of the architecture instead of 2 and layer norm), performances seem to remain similar with the fix but if you want to reproduce the exact same graph as below see ![commit](https://github.com/Reytuag/transformerXL_PPO_JAX/commit/db3e52a7b135025f70e28abea2838bbb6bbb2cc8) )
 The config used can be found as the default config in [train_PPO_trXL_pmap.py](train_PPO_trXL_pmap.py). The results can be found in [results_craftax](results_craftax)  (and can be loaded with jnp.load(str(seed)+"_metrics.npy",allow_pickle=True).item()) as well as the trained parameters. 
 
 ![craftax_training_transfoXL_PPO](https://github.com/Reytuag/transformerXL_PPO_JAX/assets/76616547/80140a56-a77e-418e-86d7-305a6e43c5ac)
