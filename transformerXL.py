@@ -75,7 +75,7 @@ class transformer_layer(nn.Module):
         out = self.dense1(out_attention_n)
         out = nn.activation.gelu(out)
         #out = nn.activation.relu(out)
-        out = self.dense2(out_attention)
+        out = self.dense2(out)
         if(self.gating):
             out= self.gate2(out,jax.nn.relu(out_attention))
         else:
