@@ -53,7 +53,7 @@ print("Start compiling and training")
 time_a=time.time()
 rng = jax.random.PRNGKey(seed)
 train_jit = jax.jit(make_train(config))
-out = train_jit(rng)
+out = jax.block_until_ready(train_jit(rng))
 print("training and compilation took " + str(time.time()-time_a))
 
 
