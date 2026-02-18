@@ -1,0 +1,74 @@
+[tool.poetry]
+name = "ppo-transformer-xl"
+version = "0.1.0"
+description = "PPO with Transformer-XL implementation for reinforcement learning"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+packages = [{include = "*.py"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+chex = "0.1.86"
+craftax = "1.4.3"
+distrax = "0.1.5"
+flax = "0.8.2"
+gymnasium = "0.29.1"
+gymnax = "0.0.7"
+jax = "0.4.26"
+jaxlib = "0.4.26"
+kiwisolver = "1.4.5"
+matplotlib = "3.8.4"
+optax = "0.2.2"
+orbax-checkpoint = "0.5.9"
+seaborn = "^0.12.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.0.0"
+pytest-cov = "^4.1.0"
+pytest-mock = "^3.11.0"
+
+[tool.poetry.scripts]
+test = "pytest:main"
+tests = "pytest:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "tests/*",
+    "*/tests/*", 
+    "test_*.py",
+    "*_test.py",
+    "setup.py",
+    "*/venv/*",
+    "*/.venv/*",
+    "*/env/*",
+    "*/.env/*",
+    "*/site-packages/*",
+    "*/__pycache__/*",
+    "*/migrations/*",
+    "results_*/*"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod"
+]
+show_missing = true
+precision = 2
+
+[tool.coverage.html]
+directory = "htmlcov"
