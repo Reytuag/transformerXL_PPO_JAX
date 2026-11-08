@@ -46,7 +46,7 @@ prefix= "results_gymnax/"+config["ENV_NAME"]
 try:
     if not os.path.exists(prefix):
                 os.makedirs(prefix)
-except:
+except OSError:
     print("directory creation " + prefix +" failed")
     
 print("Start compiling and training")
